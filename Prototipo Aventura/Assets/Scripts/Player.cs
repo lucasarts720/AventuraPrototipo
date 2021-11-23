@@ -8,7 +8,7 @@ using TMPro;
 public class Player : MonoBehaviour
 {
     #region Variables
-    bool alive = true;
+    public bool Alive => health > 0;
     public bool OnTrigger = false;
     public GameObject Trigger;
 
@@ -17,10 +17,12 @@ public class Player : MonoBehaviour
     public float healthTick, hungerTick, thirstTick, sleepTick;
     public float healthMax, hungerMax, thirstMax, sleepMax;
     public float hpRegenHunger, hpRegenThirst;
+    public float hungerHurtTick, thirstHurtTick, sleepHurtTick;
     public Slider healthBar;
     public Slider hungerBar;
     public Slider thirstBar;
     public Slider sleepBar;
+    public Text healthNumber;
     #endregion
 
     #region inventario
@@ -49,15 +51,19 @@ public class Player : MonoBehaviour
         if (hunger > 0) hunger -= Time.deltaTime / hungerTick;
         if (thirst > 0) thirst -= Time.deltaTime / thirstTick;
         if (sleep > 0) sleep -= Time.deltaTime / sleepTick;
+        if (hunger <= 0) health -= Time.deltaTime / hungerHurtTick;
+        if (thirst <= 0) health -= Time.deltaTime / thirstHurtTick;
+        if (sleep <= 0) health -= Time.deltaTime / sleepHurtTick;
 
         healthBar.value = health;
         hungerBar.value = hunger;
         thirstBar.value = thirst;
         sleepBar.value = sleep;
+        healthNumber.text = health.ToString("n0");
         #endregion
 
         #region Actions
-        if (!alive)
+        if (!Alive)
         {
             Die();
         }
@@ -105,6 +111,7 @@ public class Player : MonoBehaviour
     void Die()
     {
         SceneManager.LoadScene("DeathScene");
+        enabled = false;
     }
     #endregion
 
